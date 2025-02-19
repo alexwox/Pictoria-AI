@@ -2,6 +2,10 @@
 import React from "react";
 import { useState } from "react";
 import LoginForm from "./LoginForm";
+import { Button } from "../ui/button";
+import SignupForm from "./SignupForm";
+import Link from "next/link";
+import ResetPassword from "./ResetPassword";
 
 const AuthForm = () => {
   const [mode, setMode] = useState("login");
@@ -24,12 +28,69 @@ const AuthForm = () => {
         </p>
       </div>
       {mode === "login" && (
-        <span>
+        <>
           <LoginForm />
-        </span>
+          <div className="text-center flex justify-between">
+            <Button
+              variant={"link"}
+              onClick={() => setMode("signup")}
+              className="p-0"
+            >
+              Need an account? Sign up
+            </Button>
+            <Button
+              variant={"link"}
+              onClick={() => setMode("reset")}
+              className="p-0"
+            >
+              Forgot password?
+            </Button>
+          </div>
+        </>
       )}
-      {mode === "signup" && <span> SignUp Form</span>}
-      {mode === "reset" && <span> Reset Password Form</span>}
+      {mode === "signup" && (
+        <>
+          <SignupForm />
+          <div className="text-center">
+            <Button
+              variant={"link"}
+              onClick={() => setMode("login")}
+              className="p-0"
+            >
+              Already have an account? Login
+            </Button>
+          </div>
+          <p className="px-8 text-center text-sm text-muted-foreground">
+            By clicking sign up, you agree to our{" "}
+            <Link
+              href="#"
+              className="underline underline-offset-4 hover:text-primary"
+            >
+              Terms of Service
+            </Link>
+            <Link
+              href="#"
+              className="underline underline-offset-4 hover:text-primary"
+            >
+              and Privacy Policy.
+            </Link>
+          </p>
+        </>
+      )}
+      {mode === "reset" && (
+        <>
+          <ResetPassword />
+          <div className="text-center">
+            <Button
+              variant={"link"}
+              onClick={() => setMode("login")}
+              className="p-0"
+            >
+              Back to login
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
