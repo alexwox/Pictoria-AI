@@ -11,7 +11,7 @@ function logoutButton() {
       onClick={handleLogout}
       className="inline-block w-full cursor-pointer text-destructive"
     >
-      LogoutBtn
+      Logout
     </span>
   );
 }

@@ -1,12 +1,8 @@
-"use client";
-
 import * as React from "react";
-import { ChevronsUpDown, Image, Sparkles, SquareTerminal } from "lucide-react";
+import { ChevronsUpDown, Image, Sparkles } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
+
 import {
   Sidebar,
   SidebarContent,
@@ -15,22 +11,24 @@ import {
   SidebarMenuButton,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { createClient } from "@/lib/supabase/server";
+import { NavUser } from "./nav-user";
 
-// This is sample data.
-const data = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: SquareTerminal,
-  },
-  {
-    title: "Generate image",
-    url: "image-generation",
-    icon: Image,
-  },
-];
+export async function AppSidebar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  if (!data.user) {
+    throw new Error("Unauthorized");
+  }
+
+  const user = {
+    name: data.user.user_metadata.full_name,
+    email: data.user.user_metadata.email ?? "",
+  };
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -49,10 +47,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data} />
+        <NavMain />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
