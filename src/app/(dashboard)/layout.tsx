@@ -14,9 +14,9 @@ export default function DashboardLayout({
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <div className="">
-          <SidebarTrigger className="-ml-1" />
-          <main className="flex flex-1 flex-col gap-4 p-3 pt-0">
+        <SidebarTrigger className="ml-1 mt-4" />
+        <div className="flex items-center gap-2 my-4">
+          <main className="flex flex-1 flex-col gap-4 p-4 pt-0">
             {children}
           </main>
         </div>
