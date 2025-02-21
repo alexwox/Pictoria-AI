@@ -6,6 +6,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@media (min-width: 1535) {
+  .container {
+    max-width: 1400px
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

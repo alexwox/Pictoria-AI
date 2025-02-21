@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Card, CardContent } from "../ui/card";
 import {
@@ -8,26 +9,31 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Image from "next/image";
-const images = [
-  {
-    src: "/hero-images/Charismatic Young Man with a Warm Smile and Stylish Tousled Hair.jpeg",
-    alt: "some alt text",
-  },
-  {
-    src: "/hero-images/Confident Businesswoman on Turquoise Backdrop.jpeg",
-    alt: "some alt text",
-  },
-  {
-    src: "/hero-images/Confident Woman in Red Outfit.jpeg",
-    alt: "some alt text",
-  },
-  {
-    src: "/hero-images/Futuristic Helmet Portrait.jpeg",
-    alt: "some alt text",
-  },
-];
+import useGeneratedStore from "@/store/useGeneratedStore";
+
+// const images = [
+//   {
+//     src: "/hero-images/Charismatic Young Man with a Warm Smile and Stylish Tousled Hair.jpeg",
+//     alt: "some alt text",
+//   },
+//   {
+//     src: "/hero-images/Confident Businesswoman on Turquoise Backdrop.jpeg",
+//     alt: "some alt text",
+//   },
+//   {
+//     src: "/hero-images/Confident Woman in Red Outfit.jpeg",
+//     alt: "some alt text",
+//   },
+//   {
+//     src: "/hero-images/Futuristic Helmet Portrait.jpeg",
+//     alt: "some alt text",
+//   },
+// ];
 
 function GeneratedImages() {
+  const images = useGeneratedStore((state) => state.images);
+  const loading = useGeneratedStore((state) => state.images);
+
   if (images.length === 0) {
     return (
       <Card className="w-full max-w-2xl bg-muted">
@@ -44,8 +50,8 @@ function GeneratedImages() {
           <CarouselItem key={index} className="">
             <div className="flex relative items-center justify-center rounded-lg overflow-hidden aspect-square">
               <Image
-                src={image.src}
-                alt={image.alt}
+                src={image.url}
+                alt={"Generated images using AI"}
                 fill
                 className="w-full h-full object-cover"
               />

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -31,8 +31,10 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
 import { InfoIcon } from "lucide-react";
+import { generateImageAction } from "@/app/actions/image-actions";
+import useGeneratedStore from "@/store/useGeneratedStore";
 
-const formSchema = z.object({
+export const ImageGenerationFormSchema = z.object({
   model: z.string({
     required_error: "Model is required!",
   }),
@@ -63,8 +65,9 @@ const formSchema = z.object({
 });
 
 function Configurations() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const generateImage = useGeneratedStore((state) => state.generateImage);
+  const form = useForm<z.infer<typeof ImageGenerationFormSchema>>({
+    resolver: zodResolver(ImageGenerationFormSchema),
     defaultValues: {
       model: "black-forest-labs/flux-dev",
       prompt: "",
@@ -77,7 +80,27 @@ function Configurations() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === "model") {
+        let newSteps;
+
+        if (value.model === "black-forest-labs/flux-schnell") {
+          newSteps = 4;
+        } else {
+          newSteps = 28;
+        }
+        if (newSteps !== undefined) {
+          form.setValue("num_inference_steps", newSteps);
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form]);
+
+  async function onSubmit(values: z.infer<typeof ImageGenerationFormSchema>) {
+    await generateImage(values);
     console.log(values);
   }
   return (
@@ -172,7 +195,7 @@ function Configurations() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2">
-                      Outputs
+                      Number of outputs
                       <Tooltip>
                         <TooltipTrigger>
                           <InfoIcon className="w-4 h-4" />
@@ -259,9 +282,14 @@ function Configurations() {
                   <FormControl>
                     <Slider
                       defaultValue={[field.value]}
-                      max={50}
+                      max={
+                        form.getValues("model") ===
+                        "black-forest-labs/flux-schnell"
+                          ? 4
+                          : 50
+                      }
                       min={1}
-                      step={5}
+                      step={1}
                       onValueChange={(value) => field.onChange(value[0])}
                     />
                   </FormControl>
