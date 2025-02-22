@@ -3,6 +3,7 @@ import { ImageGenerationFormSchema } from "@/components/image-generation/Configu
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 import { generateImageAction, storeImages } from "@/app/actions/image-actions";
+import { toast } from "sonner";
 
 interface GenerateState {
   loading: boolean;
@@ -20,6 +21,8 @@ const useGeneratedStore = create<GenerateState>((set) => ({
 
   generateImage: async (values: z.infer<typeof ImageGenerationFormSchema>) => {
     set({ loading: true, error: null });
+    const toastId = toast.loading("Generating image...");
+
     try {
       const { error, success, data } = await generateImageAction(values);
 
@@ -36,9 +39,14 @@ const useGeneratedStore = create<GenerateState>((set) => ({
       });
 
       set({ images: dataWithUrl, loading: false });
+      toast.success("Image generated sucessfully", { id: toastId });
+
       await storeImages(dataWithUrl);
+      toast.success("Image stored successfully", { id: toastId });
     } catch (error: any) {
       console.error(error);
+      toast.error("Something went wrong", { id: toastId });
+
       set({
         error: "Failed to generate image, please try again",
         loading: false,
