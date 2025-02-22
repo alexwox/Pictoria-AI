@@ -147,3 +147,60 @@ export async function storeImages(data: storeImageInput[]) {
     },
   };
 }
+
+export async function getImages(limit?: number) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return {
+      error: "Unathorized",
+      success: false,
+      data: null,
+    };
+  }
+
+  let query = supabase
+    .from("generated_images")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created", { ascending: false });
+
+  if (limit) {
+    query = query.limit(limit);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    return {
+      error: error.message || "Failed to fetch images!",
+      success: false,
+      data: null,
+    };
+  }
+
+  const imagesWithUrls = await Promise.all(
+    data.map(
+      async (
+        image: Database["public"]["Tables"]["generated_images"]["Row"]
+      ) => {
+        const { data } = await supabase.storage
+          .from("generated_images")
+          .createSignedUrl(`${user.id}/${image.image_name}`, 3600);
+        return {
+          ...image,
+          url: data?.signedUrl,
+        };
+      }
+    )
+  );
+
+  return {
+    error: null,
+    success: true,
+    data: imagesWithUrls || null,
+  };
+}
