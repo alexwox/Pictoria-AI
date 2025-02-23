@@ -166,7 +166,7 @@ export async function getImages(limit?: number) {
     .from("generated_images")
     .select("*")
     .eq("user_id", user.id)
-    .order("created", { ascending: false });
+    .order("created_at", { ascending: false });
 
   if (limit) {
     query = query.limit(limit);
