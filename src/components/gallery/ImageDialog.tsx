@@ -11,9 +11,10 @@ import {
 } from "@/components/ui/sheet";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
-import { Download, TrashIcon } from "lucide-react";
+import { Download } from "lucide-react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import DeleteImage from "./DeleteImage";
 
 interface ImageDialogProps {
   image: { url: string | undefined } & Tables<"generated_images">;
@@ -61,9 +62,12 @@ function ImageDialog({ image, onClose }: ImageDialogProps) {
                   <Download className="w-4 h-4 mr-2" />
                   Download
                 </Button>
-                <Button className="w-fit" variant={"destructive"}>
-                  <TrashIcon className="w-4 h-4 mr-2" />
-                </Button>
+                <DeleteImage
+                  imageId={image.id.toString()}
+                  onDelete={onClose}
+                  className="w-fit"
+                  imageName={image.image_name || ""}
+                />
               </div>
             </div>
             <hr className="inline-block w-full border-primary/30 mb-2" />
