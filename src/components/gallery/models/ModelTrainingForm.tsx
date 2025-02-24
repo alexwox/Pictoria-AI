@@ -69,6 +69,29 @@ function ModelTrainingForm({}: Props) {
         toast.error(data.error || "Failed to upload the file", { id: toastId });
         return;
       }
+
+      // uploading file
+      const urlResponse = await fetch(data.signedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": values.zipFile[0].type,
+        },
+        body: values.zipFile[0],
+      });
+
+      if (!urlResponse.ok) {
+        throw new Error("Upload failed.");
+      }
+      toast.success("File uploaded successsfully", { id: toastId });
+
+      const res = await urlResponse.json();
+
+      const formData = new FormData();
+      formData.append("fileKey", res.Key);
+      formData.append("modelName", values.modelName);
+      formData.append("gender", values.gender);
+
+      console.log(res);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to start training!";
@@ -133,7 +156,7 @@ function ModelTrainingForm({}: Props) {
           <FormField
             control={form.control}
             name="zipFile"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
                 <FormLabel>
                   Training Data (Zip File) |&nbsp;
