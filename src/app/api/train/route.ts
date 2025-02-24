@@ -29,6 +29,13 @@ export async function POST(request: NextRequest) {
     };
 
     console.log(input);
+
+    return NextResponse.json(
+      {
+        success: true,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Training error: ", error);
 
@@ -36,9 +43,9 @@ export async function POST(request: NextRequest) {
       error instanceof Error ? error.message : "Failed to start model training";
     return NextResponse.json(
       {
-        success: true,
+        error: errorMessage,
       },
-      { status: 201 }
+      { status: 500 }
     );
   }
 }

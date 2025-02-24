@@ -116,8 +116,6 @@ function ModelTrainingForm({}: Props) {
         duration: 5000,
       });
     }
-
-    console.log(values);
   }
   return (
     <Form {...form}>
@@ -172,7 +170,7 @@ function ModelTrainingForm({}: Props) {
           <FormField
             control={form.control}
             name="zipFile"
-            render={() => (
+            render={({ field }) => (
               <FormItem>
                 <FormLabel>
                   Training Data (Zip File) |&nbsp;
