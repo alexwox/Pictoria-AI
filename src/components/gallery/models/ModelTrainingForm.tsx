@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useId } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -18,6 +18,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { getPresignedStorageUrl } from "@/app/actions/model-actions";
 
 const ACCEPTED_ZIP_FILES = ["application/x-zip-compressed", "application/zip"];
 const MAX_FILE_SIZE = 45 * 1024 * 1024;
@@ -55,15 +57,33 @@ function ModelTrainingForm({}: Props) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  const fileRef = form.register("zipFile");
+  const toastId = useId();
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    toast.loading("Uploading file", { id: toastId });
+
+    try {
+      const data = await getPresignedStorageUrl(values.zipFile[0].name);
+      console.log(data);
+      if (data.error) {
+        toast.error(data.error || "Failed to upload the file", { id: toastId });
+        return;
+      }
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to start training!";
+      toast.error(errorMessage, {
+        id: toastId,
+        duration: 5000,
+      });
+    }
+
     console.log(values);
   }
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <fieldset className="grid max-w-5xl bg-background p-8 rounded-lg gap-6">
+        <fieldset className="grid max-w-5xl bg-background p-8 rounded-lg gap-6 border">
           <FormField
             control={form.control}
             name="modelName"
@@ -116,47 +136,54 @@ function ModelTrainingForm({}: Props) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  Training Data (Zip File)
+                  Training Data (Zip File) |&nbsp;
                   <span className="text-destructive">
-                    Reade the Requirements below.
+                    Read the Requirements below.
                   </span>
                 </FormLabel>
-                <div>
-                  <ul>
-                    <li>Provide 10, 12 or 15 images in total </li>
-                    <li>Ideal breakdown for 12 images:</li>
-                    <ul>
-                      <li>6 face closeups - 3/4 half</li>
-                      <li>body closeups (till stomach)</li>
-                      <li>2/3 full body shots</li>
+                <div className="mb-4 rounded-lg shadow-sm pb-4 text-card-foreground">
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Provide 10, 12 or 15 images in total </li>
+                    <li>• Ideal breakdown for 12 images:</li>
+                    <ul className="ml-4 mt-1 space-y-1">
+                      <li> - 6 face closeups - 3/4 half</li>
+                      <li> - body closeups (till stomach)</li>
+                      <li> - 2/3 full body shots</li>
                     </ul>
-                    <li>No accessories on face/head ideally</li>
-                    <li>No other people in images</li>
+                    <li>• No accessories on face/head ideally</li>
+                    <li>• No other people in images</li>
                     <li>
-                      Different expressions, clothing, backgrounds with good
+                      • Different expressions, clothing, backgrounds with good
                       lighting
                     </li>
                     <li>
-                      Images to be in 1:1 resolution (1048x1048 or higher)
+                      • Images to be in 1:1 resolution (1048x1048 or higher)
                     </li>
                     <li>
-                      Use images of similar age group (ideally within past few
+                      • Use images of similar age group (ideally within past few
                       months)
                     </li>
-                    <li>Provide only zip file (under 45MB size)</li>
+                    <li>• Provide only zip file (under 45MB size)</li>
                   </ul>
                 </div>
                 <FormControl>
-                  <Input placeholder="Enter model name" {...field} />
+                  <Input
+                    type="file"
+                    accept=".zip"
+                    {...fileRef}
+                    onChange={(e) => field.onChange(e.target.files)}
+                  />
                 </FormControl>
                 <FormDescription>
-                  This will be the name of your trained model.
+                  Upload a zip-file containing your training imaged (max 45mb).
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit" className="w-fit">
+            Submit
+          </Button>
         </fieldset>
       </form>
     </Form>
