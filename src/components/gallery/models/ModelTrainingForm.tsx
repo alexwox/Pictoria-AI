@@ -20,6 +20,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { getPresignedStorageUrl } from "@/app/actions/model-actions";
+import { POST } from "@/app/api/train/route";
 
 const ACCEPTED_ZIP_FILES = ["application/x-zip-compressed", "application/zip"];
 const MAX_FILE_SIZE = 45 * 1024 * 1024;
@@ -65,7 +66,7 @@ function ModelTrainingForm({}: Props) {
     try {
       const data = await getPresignedStorageUrl(values.zipFile[0].name);
       console.log(data);
-      if (data.error) {
+      if (data.error || !data.signedUrl) {
         toast.error(data.error || "Failed to upload the file", { id: toastId });
         return;
       }
@@ -85,13 +86,28 @@ function ModelTrainingForm({}: Props) {
       toast.success("File uploaded successsfully", { id: toastId });
 
       const res = await urlResponse.json();
+      console.log(res);
 
       const formData = new FormData();
       formData.append("fileKey", res.Key);
       formData.append("modelName", values.modelName);
       formData.append("gender", values.gender);
 
-      console.log(res);
+      // use the /train handler
+      const response = await fetch("api/train", {
+        method: "POST",
+        body: formData,
+      });
+      const results = await response.json();
+
+      if (!response.ok || results?.error) {
+        throw new Error(results.error || "Failed to train the model!");
+      }
+
+      toast.success(
+        "Training started successfully! You'll receive a notification once it gets completed!",
+        { id: toastId }
+      );
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to start training!";
