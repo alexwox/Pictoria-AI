@@ -83,7 +83,11 @@ export async function deleteModel(
           },
         }
       );
+      console.error("RESPONSE: ", res || "missing");
       if (!res.ok) {
+        const errorData = await res.text().catch(() => null);
+        console.error("Delete model version response:", res.status, errorData);
+
         throw new Error("Failed to delete model version from Replicate");
       }
     } catch (e: any) {
@@ -98,7 +102,7 @@ export async function deleteModel(
   if (model_id) {
     try {
       const res = await fetch(
-        `https://api.replicate.com/v1/alexwox/${model_id}`,
+        `https://api.replicate.com/v1/models/alexwox/${model_id}`,
         {
           method: "DELETE",
           headers: {
@@ -107,7 +111,12 @@ export async function deleteModel(
         }
       );
       if (!res.ok) {
-        throw new Error("Failed to delete model from Replicate");
+        const errorData = await res.text().catch(() => null);
+        console.error("Delete full model response:", res.status, errorData);
+        return {
+          error: `Failed to delete model from Replicate (${res.status})`,
+          success: false,
+        };
       }
     } catch (e: any) {
       console.error("Failed to delete model from replicate", e);

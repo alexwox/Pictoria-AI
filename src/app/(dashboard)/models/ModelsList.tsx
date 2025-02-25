@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Database } from "@datatypes.types";
 import Link from "next/link";
-import React from "react";
+import React, { useId } from "react";
 import { formatDistance } from "date-fns";
 import {
   CheckCircle2,
@@ -30,6 +31,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import { deleteModel } from "@/app/actions/model-actions";
 
 type ModelType = {
   error: string | null;
@@ -43,6 +46,23 @@ interface ModelsListProps {
 
 function ModelsList({ models }: ModelsListProps) {
   const { data, success, error } = models;
+
+  const toastId = useId();
+  const handleDeleteModel = async (
+    id: number,
+    model_id: string,
+    model_version: string
+  ) => {
+    toast.loading("Deleting model...", { id: toastId });
+    const { success, error } = await deleteModel(id, model_id, model_version);
+    if (error) {
+      toast.error(error, { id: toastId });
+    }
+
+    if (success) {
+      toast.success("Model deleted successfully", { id: toastId });
+    }
+  };
 
   if (data?.length === 0) {
     return (
@@ -109,7 +129,18 @@ function ModelsList({ models }: ModelsListProps) {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction>Delete</AlertDialogAction>
+                      <AlertDialogAction
+                        onClick={() =>
+                          handleDeleteModel(
+                            model.id,
+                            model.model_id || "",
+                            model.version || ""
+                          )
+                        }
+                        className="bg-destructive hover:bg-destructive/90"
+                      >
+                        Delete
+                      </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
