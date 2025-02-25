@@ -117,4 +117,11 @@ export async function deleteModel(
       };
     }
   }
+
+  const { error } = await supabase.from("models").delete().eq("id", id);
+
+  return {
+    error: error?.message || "Failed to delete model from db",
+    success: !error,
+  };
 }
