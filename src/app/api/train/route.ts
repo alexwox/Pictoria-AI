@@ -1,5 +1,13 @@
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import Replicate from "replicate";
+
+const replicate = new Replicate({
+  auth: process.env.REPLICATE_API_TOKEN,
+});
+
+const WEBHOOK_URL = process.env.SITE_URL ?? process.env.NGROK_WEBHOOK_URL;
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,7 +36,51 @@ export async function POST(request: NextRequest) {
       gender: formData.get("gender") as string,
     };
 
-    console.log(input);
+    if (!input.fileKey || !input.modelName) {
+      return NextResponse.json(
+        {
+          error: "Missing required fields",
+        },
+        { status: 400 }
+      );
+    }
+
+    const fileName = input.fileKey.replace("training_data/", "");
+    const { data: fileUrl } = await supabaseAdmin.storage
+      .from("training_data")
+      .createSignedUrl(fileName, 3600);
+
+    if (!fileUrl?.signedUrl) {
+      throw new Error("Failed to get the file URL");
+    }
+    const modelId = `${user.id}_${Date.now()}_${input.modelName
+      .toLowerCase()
+      .replaceAll(" ", "_")}`;
+
+    // Create model first
+    await replicate.models.create("alexwox", modelId, {
+      visibility: "private",
+      hardware: "gpu-a100-large",
+    });
+
+    const training = await replicate.trainings.create(
+      "ostris",
+      "flux-dev-lora-trainer",
+      "b6af14222e6bd9be257cbc1ea4afda3cd0503e1133083b9d1de0364d8568e6ef",
+      {
+        destination: `alexwox/${modelId}`,
+        input: {
+          steps: 1200,
+          resolution: "1024",
+          input_images: fileUrl.signedUrl,
+          trigger_word: "CBTPAI",
+          webhook: `${WEBHOOK_URL}/api/webhooks/training`,
+          webhook_events_filter: ["completed"], // optional
+        },
+      }
+    );
+
+    console.log(training);
 
     return NextResponse.json(
       {
