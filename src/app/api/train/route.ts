@@ -74,7 +74,11 @@ export async function POST(request: NextRequest) {
           resolution: "1024",
           input_images: fileUrl.signedUrl,
           trigger_word: "CBTPAI",
-          webhook: `${WEBHOOK_URL}/api/webhooks/training`,
+          webhook: `${WEBHOOK_URL}/api/webhooks/training?userId=${
+            user.id
+          }&modelName=${encodeURIComponent(
+            input.modelName
+          )}&fileName=${encodeURIComponent(fileName)}`,
           webhook_events_filter: ["completed"], // optional
         },
       }
