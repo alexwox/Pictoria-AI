@@ -1,13 +1,21 @@
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  console.log(body);
-
-  return NextResponse.json(
-    {
-      success: true,
-    },
-    { status: 201 }
-  );
+  try {
+    console.log("Webhook is working", request);
+    return NextResponse.json(
+      {
+        success: true,
+      },
+      { status: 201 }
+    );
+  } catch (error: any) {
+    console.error("Webhook processing error.");
+    return NextResponse.json(
+      {
+        error: error.message ?? "Internal server error",
+      },
+      { status: 500 }
+    );
+  }
 }

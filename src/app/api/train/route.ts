@@ -80,7 +80,17 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    console.log(training);
+    // Add model to Supabase
+    await supabaseAdmin.from("models").insert({
+      model_id: modelId,
+      user_id: user.id,
+      model_name: input.modelName,
+      gender: input.gender,
+      training_status: training.status,
+      trigger_word: "CBTPAI",
+      training_steps: 1200,
+      training_id: training.id,
+    });
 
     return NextResponse.json(
       {
