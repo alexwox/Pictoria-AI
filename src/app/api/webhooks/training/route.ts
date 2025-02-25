@@ -12,8 +12,9 @@ const replicate = new Replicate({
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
-  console.log("Webhook is working", request);
+  console.log("Webhook is working, endpoint called:", request);
   try {
+    console.log("In the try block....");
     const body = await request.json();
     const url = new URL(request.url);
     const userId = url.searchParams.get("userId") ?? "";
@@ -41,6 +42,7 @@ export async function POST(request: Request) {
       (expectedSignature) => expectedSignature === computedSignature
     );
 
+    console.log("Completed to isValid: ", isValid);
     if (!isValid) {
       return new NextResponse("Invalid Signature", { status: 401 });
     }
@@ -56,10 +58,12 @@ export async function POST(request: Request) {
     const userEmail = user.user.email ?? "";
     const userName = user.user.user_metadata.full_name ?? "";
 
+    console.log("Before if statement...: ", { userEmail, userName });
     if (body.status === "succeeded") {
+      console.log("In IF, succeeded:", body.status);
       // send a successfull status email
       const { data, error } = await resend.emails.send({
-        from: "Pictoria AI <alexander.woxstrom@gmail.com>",
+        from: "Pictoria AI <hi@woxab.ai>",
         to: [userEmail],
         subject: "Model Training Completed",
         react: EmailTemplate({
@@ -68,8 +72,9 @@ export async function POST(request: Request) {
         }),
       });
       // Upade supabase models table
+      console.log("In IF, succeeded, updating supabase...");
       await supabaseAdmin
-        .from("model")
+        .from("models")
         .update({
           training_status: body.status,
           training_time: body.metrics?.total_time ?? null,
@@ -80,17 +85,18 @@ export async function POST(request: Request) {
     } else {
       // Handle failed + cancel states
       await resend.emails.send({
-        from: "Pictoria AI <alexander.woxstrom@gmail.com>",
+        from: "Pictoria AI <hi@woxab.ai>",
         to: [userEmail],
         subject: `Model Training ${body.status}`,
         react: EmailTemplate({
           userName,
-          message: `Your model training has ${body.status}`,
+          message: `Your model training is ${body.status}.`,
         }),
       });
       // Upade supabase models table
+      console.log("In IF, failed/cancelled, updating supabase...");
       await supabaseAdmin
-        .from("model")
+        .from("models")
         .update({
           training_status: body.status,
         })
@@ -99,8 +105,9 @@ export async function POST(request: Request) {
     }
 
     // Delete training data from supabase storage
+    console.log("After IF, remove training data from supabase...");
     await supabaseAdmin.storage.from("training_data").remove([`${fileName}`]);
-
+    console.log(NextResponse.json("OK", { status: 200 }));
     return NextResponse.json("OK", { status: 200 });
   } catch (error: any) {
     console.error("Webhook processing error.");

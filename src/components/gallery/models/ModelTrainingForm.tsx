@@ -83,7 +83,7 @@ function ModelTrainingForm({}: Props) {
       if (!urlResponse.ok) {
         throw new Error("Upload failed.");
       }
-      toast.success("File uploaded successsfully", { id: toastId });
+      toast.success("File uploaded successfully", { id: toastId });
 
       const res = await urlResponse.json();
       console.log(res);
@@ -92,6 +92,8 @@ function ModelTrainingForm({}: Props) {
       formData.append("fileKey", res.Key);
       formData.append("modelName", values.modelName);
       formData.append("gender", values.gender);
+
+      toast.loading("Initiating model training ... ", { id: toastId });
 
       // use the /train handler
       const response = await fetch("api/train", {

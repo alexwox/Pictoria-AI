@@ -26,7 +26,7 @@ const navItems = [
     icon: SquareTerminal,
   },
   {
-    title: "Generate image",
+    title: "Generate Image",
     url: "image-generation",
     icon: Image,
   },
