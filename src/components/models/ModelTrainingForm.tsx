@@ -15,12 +15,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { getPresignedStorageUrl } from "@/app/actions/model-actions";
-import { POST } from "@/app/api/train/route";
+import { useRouter } from "next/navigation";
 
 const ACCEPTED_ZIP_FILES = ["application/x-zip-compressed", "application/zip"];
 const MAX_FILE_SIZE = 45 * 1024 * 1024;
@@ -49,6 +48,7 @@ const formSchema = z.object({
 type Props = {};
 
 function ModelTrainingForm({}: Props) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -110,6 +110,8 @@ function ModelTrainingForm({}: Props) {
         "Training started successfully! You'll receive a notification once it gets completed!",
         { id: toastId }
       );
+
+      router.push("/models");
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to start training!";

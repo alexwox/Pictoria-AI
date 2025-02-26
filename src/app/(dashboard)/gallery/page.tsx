@@ -4,7 +4,6 @@ import React from "react";
 
 async function GalleryPage() {
   const { data: images } = await getImages();
-  console.log("@GalleryPage", images);
   return (
     <section className="container mx-auto">
       <h1 className="text-3xl font-semibold mb-2">My Images</h1>

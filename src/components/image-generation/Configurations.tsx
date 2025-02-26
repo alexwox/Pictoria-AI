@@ -106,8 +106,21 @@ function Configurations({ userModels, model_id }: ConfigurationsProps) {
   }, [form]);
 
   async function onSubmit(values: z.infer<typeof ImageGenerationFormSchema>) {
-    await generateImage(values);
-    console.log(values);
+    const newValues = {
+      ...values,
+      prompt: values.model.startsWith("alexwox/")
+        ? (() => {
+            const modelId = values.model.replace("alexwox/", "").split(":")[0];
+            const selectedModel = userModels.find(
+              (model) => model.model_id === modelId
+            );
+            return `Photo of ${selectedModel?.trigger_word || ""} ${
+              selectedModel?.gender || "man"
+            }, ${values.prompt}`;
+          })()
+        : values.prompt,
+    };
+    await generateImage(newValues);
   }
   return (
     <TooltipProvider>

@@ -35,6 +35,7 @@ import {
 import { toast } from "sonner";
 import { deleteModel } from "@/app/actions/model-actions";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 type ModelType = {
   error: string | null;
@@ -48,6 +49,7 @@ interface ModelsListProps {
 
 function ModelsList({ models }: ModelsListProps) {
   const { data, success, error } = models;
+  const router = useRouter();
 
   const toastId = useId();
   const handleDeleteModel = async (
@@ -63,6 +65,7 @@ function ModelsList({ models }: ModelsListProps) {
 
     if (success) {
       toast.success("Model deleted successfully", { id: toastId });
+      router.refresh();
     }
   };
 
