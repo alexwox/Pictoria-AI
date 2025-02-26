@@ -1,4 +1,4 @@
-import ModelTrainingForm from "@/components/gallery/models/ModelTrainingForm";
+import ModelTrainingForm from "@/components/models/ModelTrainingForm";
 import React from "react";
 
 function ModelTrainingPage() {

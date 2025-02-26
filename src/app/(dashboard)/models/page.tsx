@@ -1,6 +1,6 @@
 import { fetchModels } from "@/app/actions/model-actions";
 import React from "react";
-import ModelsList from "./ModelsList";
+import ModelsList from "../../../components/models/ModelsList";
 
 async function ModelsPage() {
   const data = await fetchModels();
