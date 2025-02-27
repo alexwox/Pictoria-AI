@@ -48,6 +48,7 @@ const upsertPriceRecord = async (
     interval_count: price.recurring?.interval_count ?? null,
     trial_period_days: price.recurring?.trial_period_days ?? TRIAL_PERIOD_DAYS,
     metadata: price.metadata ?? null,
+    description: null,
   };
 
   const { error: upsertError } = await supabaseAdmin
@@ -235,7 +236,7 @@ const manageSubscriptionStatusChange = async (
     id: subscription.id,
     user_id: uuid,
     metadata: subscription.metadata,
-    status: subscription.status,
+    status: subscription.status === "paused" ? "canceled" : subscription.status,
     price_id: subscription.items.data[0].price.id,
     //TODO check quantity on subscription
     // @ts-ignore
