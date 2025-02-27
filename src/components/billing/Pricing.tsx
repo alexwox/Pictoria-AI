@@ -1,19 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { AnimatedGradientText } from "../magicui/animated-gradient-text";
 import { cn } from "@/lib/utils";
 import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
 import { Tables } from "@datatypes.types";
 import { Badge } from "../ui/badge";
-import Link from "next/link";
 import { Button } from "../ui/button";
-import { Check } from "lucide-react";
-import PricingSheet from "./PricingSheet";
 import { User } from "@supabase/supabase-js";
 import { usePathname, useRouter } from "next/navigation";
 import { checkoutWithStripe } from "@/lib/stripe/server";
-import { error } from "console";
 import { getErrorRedirect } from "@/lib/helpers";
 import { getStripe } from "@/lib/stripe/client";
 
@@ -47,14 +42,13 @@ const renderPricingButton = ({
   price,
   mostPopularProduct,
   handleStripeCheckout,
-  handleStripePortalRequest,
 }: {
   subscription: SubscriptionWithProduct | null;
   user: User | null;
   product: ProductWithPrices;
   price: Price;
   mostPopularProduct: string;
-  handleStripeCheckout: (price: Price) => Promise<string>;
+  handleStripeCheckout: (price: Price) => Promise<void>;
   handleStripePortalRequest: () => Promise<string>;
 }) => {
   // Case 1: User has active subscription for account

@@ -6,6 +6,7 @@ import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
 import { Button } from "../ui/button";
 import PricingSheet from "./PricingSheet";
+import { format } from "date-fns";
 
 type Product = Tables<"products">;
 type Prices = Tables<"prices">;
@@ -127,20 +128,30 @@ function PlanSummary({ user, subscription, products }: PlanSummaryProps) {
             </div>
           </div>
 
-          <div className="col-span-full flex flex-col">
-            Please upgrade to a plan to continue using the app.
+          <div className="col-span-3 flex flex-row justify-between flex-wrap">
+            <div className="flex flex-col pb-0">
+              <div className="text-sm font-normal">Price/Month</div>
+              <div className="flex-1 pt-1 text-sm font-medium">
+                {priceString}
+              </div>
+            </div>
+            <div className="flex flex-col pb-0">
+              <div className="text-sm font-normal">Included Credits</div>
+              <div className="flex-1 pt-1 text-sm font-medium">0 Credits</div>
+            </div>
+
+            <div className="flex flex-col pb-0">
+              <div className="text-sm font-normal">Renewal Date</div>
+              <div className="flex-1 pt-1 text-sm font-medium">
+                {format(
+                  new Date(subscription.current_period_end),
+                  "MMM d, yyyy"
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </CardContent>
-      <CardFooter className="border-t border-border px-4 py-3">
-        <span className="flex ml-auto flex-row">
-          <PricingSheet
-            user={user}
-            products={products ?? []}
-            subscription={subscription}
-          />
-        </span>
-      </CardFooter>
     </Card>
   );
 }
