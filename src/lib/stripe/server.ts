@@ -94,7 +94,7 @@ export async function checkoutWithStripe(
 
     // Create a checkout session in Stripe
     let session;
-    console.log(session);
+    console.log("Before session created: ", session);
     try {
       session = await stripe.checkout.sessions.create(params);
     } catch (err) {
@@ -162,7 +162,7 @@ export async function createStripePortal(currentPath: string) {
     try {
       const { url } = await stripe.billingPortal.sessions.create({
         customer,
-        return_url: getURL("/account"),
+        return_url: getURL("/billing"),
       });
       if (!url) {
         throw new Error("Could not create billing portal");

@@ -8,9 +8,10 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { User } from "@supabase/supabase-js";
 import { usePathname, useRouter } from "next/navigation";
-import { checkoutWithStripe } from "@/lib/stripe/server";
+import { checkoutWithStripe, createStripePortal } from "@/lib/stripe/server";
 import { getErrorRedirect } from "@/lib/helpers";
 import { getStripe } from "@/lib/stripe/client";
+import { toast } from "sonner";
 
 type Product = Tables<"products">;
 type Price = Tables<"prices">;
@@ -32,7 +33,10 @@ interface PricingProps {
   subscription: SubscriptionWithProduct | null;
   user: User | null;
   products: ProductWithPrices[] | null;
-  mostPopularProduct: string;
+  mostPopularProduct?: string;
+  showInterval?: boolean;
+  className?: string;
+  activeProduct?: string;
 }
 
 const renderPricingButton = ({
@@ -42,27 +46,52 @@ const renderPricingButton = ({
   price,
   mostPopularProduct,
   handleStripeCheckout,
+  handleStripePortalRequest,
 }: {
   subscription: SubscriptionWithProduct | null;
   user: User | null;
   product: ProductWithPrices;
   price: Price;
-  mostPopularProduct: string;
+  mostPopularProduct?: string;
   handleStripeCheckout: (price: Price) => Promise<void>;
-  handleStripePortalRequest: () => Promise<string>;
+  handleStripePortalRequest: () => Promise<void>;
 }) => {
   // Case 1: User has active subscription for account
-  // if (
-  //   user &&
-  //   subscription &&
-  //   subscription.prices?.products?.name?.toLowerCase()
-  // )
+  if (
+    user &&
+    subscription &&
+    subscription.prices?.products?.name?.toLowerCase() ==
+      product.name?.toLowerCase()
+  ) {
+    return (
+      <Button
+        onClick={handleStripePortalRequest}
+        className="mt-8 w-full font-semibold"
+      >
+        Manage Subscription
+      </Button>
+    );
+  }
 
+  // Case 2: User logged in and has active subscription for different product
+  if (user && subscription) {
+    return (
+      <Button
+        variant={"secondary"}
+        onClick={handleStripePortalRequest}
+        className="mt-8 w-full font-semibold"
+      >
+        Switch Plan
+      </Button>
+    );
+  }
+  // Case 3: logged in user without subscription
   if (user && !subscription) {
     return (
       <Button
         variant={
-          product.name?.toLocaleLowerCase() === mostPopularProduct.toLowerCase()
+          product.name?.toLocaleLowerCase() ===
+          mostPopularProduct?.toLowerCase()
             ? "default"
             : "secondary"
         }
@@ -73,7 +102,19 @@ const renderPricingButton = ({
       </Button>
     );
   }
-  return null;
+  return (
+    <Button
+      variant={
+        product.name?.toLocaleLowerCase() === mostPopularProduct?.toLowerCase()
+          ? "default"
+          : "secondary"
+      }
+      onClick={() => handleStripeCheckout(price)}
+      className="mt-8 w-full font-semibold"
+    >
+      Subscribe
+    </Button>
+  );
 };
 
 function Pricing({
@@ -81,6 +122,9 @@ function Pricing({
   products,
   mostPopularProduct = "pro",
   subscription,
+  showInterval = true,
+  className,
+  activeProduct = "",
 }: PricingProps) {
   const [billingInterval, setBillingInterval] = useState("month");
   console.log("@Pricing, Products: ", products);
@@ -130,27 +174,37 @@ function Pricing({
   };
 
   const handleStripePortalRequest = async () => {
-    return "Portal handler";
+    toast.info("Redirecting to Stripe portal...");
+    const redirectUrl = await createStripePortal(currentPath);
+    return router.push(redirectUrl);
   };
 
   return (
-    <section className=" max-w-7xl mx-auto py-16 px-8 w-full flex flex-col">
-      <div className="flex justify-center items-center space-x-4 py-8">
-        <Label htmlFor="pricing-switch" className="font-semibold text-base">
-          Monthly
-        </Label>
-        <Switch
-          id="pricing-switch"
-          checked={billingInterval === "year"}
-          onCheckedChange={(checked) =>
-            setBillingInterval(checked ? "year" : "month")
-          }
-        />
-        <Label htmlFor="pricing-switch" className="font-semibold text-base">
-          Yearly
-        </Label>
-      </div>
-      <div className="grid grid-cols-3 place-items-center mx-auto gap-8 space-y-4">
+    <section
+      className={cn(
+        "max-w-7xl mx-auto py-16 px-8 w-full flex flex-col",
+        className
+      )}
+    >
+      {showInterval && (
+        <div className="flex justify-center items-center space-x-4 py-8">
+          <Label htmlFor="pricing-switch" className="font-semibold text-base">
+            Monthly
+          </Label>
+          <Switch
+            id="pricing-switch"
+            checked={billingInterval === "year"}
+            onCheckedChange={(checked) =>
+              setBillingInterval(checked ? "year" : "month")
+            }
+          />
+          <Label htmlFor="pricing-switch" className="font-semibold text-base">
+            Yearly
+          </Label>
+        </div>
+      )}
+
+      <div className="grid grid-cols-3 place-items-center mx-auto gap-8 space-y-0">
         {orderedProducts.map((product) => {
           const price = product?.prices?.find(
             (price) => price.interval === billingInterval
@@ -166,8 +220,8 @@ function Pricing({
               key={product.id}
               className={cn(
                 "border bg-background rounded-xl shadow-sm h-fit divide-y divide-border border-border",
-                product.name?.toLowerCase() === mostPopularProduct.toLowerCase()
-                  ? "border-primary bg-background drop-shadow-md scale-105"
+                product.name?.toLowerCase() === activeProduct.toLowerCase()
+                  ? "border-primary bg-background drop-shadow-md"
                   : "border-border"
               )}
             >
@@ -175,10 +229,10 @@ function Pricing({
                 <h2 className="text-2xl leading-6 font-semibold text-foreground flex items-center justify-between">
                   {product.name}
                   {product.name?.toLowerCase() ===
-                  mostPopularProduct.toLowerCase() ? (
+                  activeProduct.toLowerCase() ? (
                     <Badge className="border-border font-semibold">
                       {" "}
-                      Most popular{" "}
+                      Selected{" "}
                     </Badge>
                   ) : null}
                 </h2>

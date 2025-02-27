@@ -9,6 +9,25 @@ const replicate = new Replicate({
 
 const WEBHOOK_URL = "https://97dc-90-142-47-77.ngrok-free.app";
 
+async function validateUserCredits(userId: string) {
+  const { data: credits, error } = await supabaseAdmin
+    .from("credits")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
+
+  if (error) {
+    throw new Error("Error getting user credits");
+  }
+
+  const numCredits = credits.model_training_count ?? 0;
+  if (numCredits <= 0) {
+    throw new Error("No credits left for training");
+  }
+
+  return numCredits;
+}
+
 export async function POST(request: NextRequest) {
   try {
     if (!process.env.REPLICATE_API_TOKEN) {
@@ -44,6 +63,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    const oldCredits = await validateUserCredits(user.id);
 
     const fileName = input.fileKey.replace("training_data/", "");
     const { data: fileUrl } = await supabaseAdmin.storage
@@ -95,6 +116,12 @@ export async function POST(request: NextRequest) {
       training_steps: 1200,
       training_id: training.id,
     });
+
+    // update credits
+    await supabaseAdmin
+      .from("credits")
+      .update({ model_training_count: oldCredits - 1 })
+      .eq("user_id", user.id);
 
     return NextResponse.json(
       {

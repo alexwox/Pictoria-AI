@@ -1,4 +1,6 @@
+import { getCredits } from "@/app/actions/credit-actions";
 import PlanSummary from "@/components/billing/PlanSummary";
+import Pricing from "@/components/billing/Pricing";
 import { getProducts, getSubscription, getUser } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server";
 import { subscribe } from "diagnostics_channel";
@@ -18,6 +20,8 @@ async function BillingPage() {
     return redirect("/login");
   }
 
+  const { data: credits } = await getCredits();
+
   return (
     <section className="container mx-auto space-y-8">
       <div className="">
@@ -32,7 +36,20 @@ async function BillingPage() {
           subscription={subscription}
           user={user}
           products={products || []}
+          credits={credits}
         />
+        {subscription.status === "active" && (
+          <Pricing
+            user={user}
+            products={products ?? []}
+            subscription={subscription}
+            showInterval={false}
+            className="!p-0 max-w-full"
+            activeProduct={
+              subscription?.prices?.products.name.toLowerCase() || "pro"
+            }
+          />
+        )}
       </div>
     </section>
   );
