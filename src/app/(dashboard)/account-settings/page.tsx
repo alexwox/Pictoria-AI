@@ -1,4 +1,5 @@
 import AccountForm from "@/components/account/AccountForm";
+import SecuritySettings from "@/components/account/SecuritySettings";
 import { getUser } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
@@ -21,6 +22,7 @@ async function AccountSettingsPage() {
       </div>
       <div className="grid gap-8">
         <AccountForm user={user} />
+        <SecuritySettings user={user} />
       </div>
     </section>
   );
