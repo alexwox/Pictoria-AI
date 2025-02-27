@@ -26,9 +26,13 @@ export default async function Page() {
 
       <StatsCards
         imageCount={imageCount}
-        modelCount={modelCount}
+        modelCount={modelCount!}
         credits={credits}
       />
+
+      <div className="grid gap-6 grid-cols-4">
+        Recent Images Quick Actions Recent models
+      </div>
     </section>
   );
 }
