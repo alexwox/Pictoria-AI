@@ -20,15 +20,15 @@ type CheckoutResponse = {
 
 export async function checkoutWithStripe(
   price: Price,
-  redirectPath: string = "/account"
+  redirectPath: string = "/dashboard"
 ): Promise<CheckoutResponse> {
   try {
     // Get the user from Supabase auth
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       error,
       data: { user },
-    } = await (await supabase).auth.getUser();
+    } = await supabase.auth.getUser();
 
     if (error || !user) {
       console.error(error);
@@ -85,6 +85,7 @@ export async function checkoutWithStripe(
 
     // Create a checkout session in Stripe
     let session;
+    console.log(session);
     try {
       session = await stripe.checkout.sessions.create(params);
     } catch (err) {
@@ -121,11 +122,11 @@ export async function checkoutWithStripe(
 
 export async function createStripePortal(currentPath: string) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       error,
       data: { user },
-    } = await (await supabase).auth.getUser();
+    } = await supabase.auth.getUser();
 
     if (!user) {
       if (error) {

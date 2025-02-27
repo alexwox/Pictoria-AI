@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
 import { Button } from "../ui/button";
+import PricingSheet from "./PricingSheet";
 
 type Product = Tables<"products">;
 type Prices = Tables<"prices">;
@@ -71,9 +72,11 @@ function PlanSummary({ user, subscription, products }: PlanSummaryProps) {
         </CardContent>
         <CardFooter className="border-t border-border px-4 py-3">
           <span className="flex ml-auto flex-row">
-            <Button variant={"outline"} className="">
-              Upgrade
-            </Button>
+            <PricingSheet
+              user={user}
+              products={products ?? []}
+              subscription={subscription}
+            />
           </span>
         </CardFooter>
       </Card>
