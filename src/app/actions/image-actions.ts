@@ -190,7 +190,6 @@ export async function getImages(limit?: number) {
     return {
       error: "Unathorized",
       success: false,
-      data: null,
     };
   }
 
