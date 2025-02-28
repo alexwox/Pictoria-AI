@@ -6,6 +6,7 @@ import Image from "next/image";
 import Navigation from "@/components/landing-page/Navigation";
 import HeroSection from "@/components/landing-page/HeroSection";
 import Features from "@/components/landing-page/Features";
+import Testimonials from "@/components/landing-page/Testimonials";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -23,6 +24,7 @@ export default async function Home() {
       <Navigation />
       <HeroSection />
       <Features />
+      <Testimonials />
       <Pricing products={products ?? []} />
     </main>
   );
