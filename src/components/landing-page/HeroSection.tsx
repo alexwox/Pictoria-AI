@@ -179,9 +179,11 @@ function MarqueeColumn({
         "w-full relative h-full flex flex-col justify-center items-center",
         className
       )}
-      style={{
-        "--duration": duration,
-      }}
+      style={
+        {
+          ["--duration" as string]: duration,
+        } as React.CSSProperties
+      }
     >
       {Images.sort(() => Math.random() - 0.5).map((image, index) => {
         return (

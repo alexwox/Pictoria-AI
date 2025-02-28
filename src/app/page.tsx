@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import Image from "next/image";
 import Navigation from "@/components/landing-page/Navigation";
 import HeroSection from "@/components/landing-page/HeroSection";
+import Features from "@/components/landing-page/Features";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -21,6 +22,7 @@ export default async function Home() {
     <main className="flex flex-col min-h-screen items-center justify-center">
       <Navigation />
       <HeroSection />
+      <Features />
       <Pricing products={products ?? []} />
     </main>
   );
