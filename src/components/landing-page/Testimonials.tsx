@@ -56,7 +56,7 @@ function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="w-full bg-muted py-32 flex flex-col items-center justify-center"
+      className="w-full bg-muted px-6 xs:px-8 sm:px-0 sm:mx-8 lg:mx-auto py-32 flex flex-col items-center justify-center"
     >
       <AnimatedGradientText className="bg-background backdrop-blur-0">
         <span
@@ -95,7 +95,6 @@ function Testimonials() {
         <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 sm:w-1/4 bg-gradient-to-r from-background"></div>
         <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 sm:w-1/4 bg-gradient-to-l from-background"></div>
       </div>
-      ;
     </section>
   );
 }
