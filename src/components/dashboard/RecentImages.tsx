@@ -15,9 +15,12 @@ import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
 
 interface RecentImagesProps {
-  images: Array<Tables<"generated_images">> & {
-    url: string | undefined;
-  };
+  images: Array<
+    Tables<"generated_images"> & {
+      url: string | undefined;
+    }
+  >;
+  className?: string;
 }
 
 function RecentImages({ images }: RecentImagesProps) {
@@ -60,8 +63,8 @@ function RecentImages({ images }: RecentImagesProps) {
                     <Image
                       src={image.url || ""}
                       alt={image.prompt || ""}
-                      width={image.width || ""}
-                      height={image.height || ""}
+                      width={image.width || 0}
+                      height={image.height || 0}
                       className="object-cover"
                     />
                   </div>
