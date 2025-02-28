@@ -3,6 +3,8 @@ import { getProducts, getUser } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Image from "next/image";
+import Navigation from "@/components/landing-page/Navigation";
+import HeroSection from "@/components/landing-page/HeroSection";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -17,6 +19,8 @@ export default async function Home() {
   // }
   return (
     <main className="flex flex-col min-h-screen items-center justify-center">
+      <Navigation />
+      <HeroSection />
       <Pricing products={products ?? []} />
     </main>
   );
