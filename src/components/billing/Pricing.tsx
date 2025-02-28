@@ -182,7 +182,7 @@ function Pricing({
   return (
     <section
       className={cn(
-        "max-w-7xl mx-auto py-16 px-8 w-full flex flex-col",
+        "max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 w-full flex flex-col",
         className
       )}
     >
@@ -204,7 +204,7 @@ function Pricing({
         </div>
       )}
 
-      <div className="grid grid-cols-3 place-items-center mx-auto gap-8 space-y-0">
+      <div className="grid grid-cols-1 lg:grid-cols-3 place-items-center mx-auto gap-8 space-y-0">
         {orderedProducts.map((product) => {
           const price = product?.prices?.find(
             (price) => price.interval === billingInterval

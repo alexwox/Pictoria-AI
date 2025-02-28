@@ -24,8 +24,8 @@ function GalleryComponent({ images }: GalleryProps) {
   }
 
   return (
-    <section className="container mc-auto py-8">
-      <div className="columns-4 gap-4 space-y-4">
+    <section className="container mx-auto py-8">
+      <div className="columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
         {images.map((image, index) => {
           return (
             <div key={index} className="">

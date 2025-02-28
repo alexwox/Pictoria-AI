@@ -85,7 +85,7 @@ function ModelsList({ models }: ModelsListProps) {
     );
   }
   return (
-    <div className="grid gap-6 grid-cols-3">
+    <div className="grid gap-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
       {data?.map((model) => (
         <Card key={model.id} className="relative flex flex-col overflow-hidden">
           <CardHeader>
@@ -96,12 +96,15 @@ function ModelsList({ models }: ModelsListProps) {
                   {model.training_status === "succeeded" ? (
                     <div className="flex items-center gap-1 text-sm text-green-500">
                       <CheckCircle2 className="w-4 h-4" />
-                      <span className="capitalize"> Ready</span>
+                      <span className="hidden sm:inline capitalize">
+                        {" "}
+                        Ready
+                      </span>
                     </div>
                   ) : model.training_status === "canceled" ? (
                     <div className="flex items-center gap-1 text-sm text-red-500">
                       <XCircle className="w-4 h-4" />
-                      <span className="capitalize">
+                      <span className="hidden sm:inline capitalize">
                         {" "}
                         {model.training_status}
                       </span>

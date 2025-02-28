@@ -7,6 +7,7 @@ import { Progress } from "../ui/progress";
 import { Button } from "../ui/button";
 import PricingSheet from "./PricingSheet";
 import { format } from "date-fns";
+import { Separator } from "../ui/separator";
 
 type Product = Tables<"products">;
 type Prices = Tables<"prices">;
@@ -115,8 +116,8 @@ function PlanSummary({
             {subscriptionProduct?.name} Plan
           </Badge>
         </h3>
-        <div className="grid grid-cols-8 gap-4">
-          <div className="col-span-5 flex flex-col pr-12">
+        <div className="grid grid-cols-3 xl:grid-cols-8 gap-4">
+          <div className="col-span-full xl:col-span-5 flex flex-col xl:pr-12">
             <div className="flex-1 text-sm font-normal flex w-full justify-between items-center">
               <span className="font-semibold text-base">
                 {imageGenCount}/{maxImageGenCount}
@@ -133,7 +134,7 @@ function PlanSummary({
             </div>
           </div>
 
-          <div className="col-span-5 flex flex-col pr-12">
+          <div className="col-span-full xl:col-span-5 flex flex-col xl:pr-12">
             <div className="flex-1 text-sm font-normal flex w-full justify-between items-center">
               <span className="font-semibold text-base">
                 {modelTrainCount} / {maxModelTrainCount}
@@ -150,14 +151,16 @@ function PlanSummary({
             </div>
           </div>
 
-          <div className="col-span-3 flex flex-row justify-between flex-wrap">
+          <div className="col-span-full xl:col-span-3 sm:flex sm:flex-row sm:justify-between sm:flex-wrap">
             <div className="flex flex-col pb-0">
+              <Separator className="sm:hidden mb-2" />
               <div className="text-sm font-normal">Price/Month</div>
               <div className="flex-1 pt-1 text-sm font-medium">
                 {priceString}
               </div>
             </div>
             <div className="flex flex-col pb-0">
+              <Separator className="sm:hidden my-2" />
               <div className="text-sm font-normal">Included Credits</div>
               <div className="flex-1 pt-1 text-sm font-medium">
                 {imageGenCount}
@@ -165,6 +168,7 @@ function PlanSummary({
             </div>
 
             <div className="flex flex-col pb-0">
+              <Separator className="sm:hidden my-2" />
               <div className="text-sm font-normal">Renewal Date</div>
               <div className="flex-1 pt-1 text-sm font-medium">
                 {format(
