@@ -56,8 +56,11 @@ function AccountForm({ user }: AccountFormProps) {
       } else {
         toast.success("Profile updated successfully", { id: toastId });
       }
-    } catch (error: any) {
-      toast.error(error?.message, { id: toastId });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error?.message, { id: toastId });
+      }
+      toast.error("Something went wrong", { id: toastId });
     }
   }
   return (

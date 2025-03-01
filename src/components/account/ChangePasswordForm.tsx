@@ -75,10 +75,16 @@ function ChangePasswordForm({ className }: { className: string }) {
         setLoading(false);
         redirect("/login");
       }
-    } catch (error: any) {
-      toast.error(String(error?.message) || "Something went wrong...", {
-        id: toastId,
-      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(String(error?.message) || "Something went wrong...", {
+          id: toastId,
+        });
+      } else {
+        toast.error("Something went wrong...", {
+          id: toastId,
+        });
+      }
     } finally {
       setLoading(false);
     }

@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     if (body.status === "succeeded") {
       console.log("In IF, succeeded:", body.status);
       // send a successfull status email
-      const { data, error } = await resend.emails.send({
+      await resend.emails.send({
         from: "Pictoria AI <hi@woxab.ai>",
         to: [userEmail],
         subject: "Model Training Completed",

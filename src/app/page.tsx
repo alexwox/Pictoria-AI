@@ -9,6 +9,7 @@ import Faqs from "@/components/landing-page/Faqs";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/landing-page/Footer";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -18,9 +19,9 @@ export default async function Home() {
     getProducts(supabase), // Gets all the active products with prices
   ]);
 
-  // if(user){
-  //   return redirect("/dashboard")
-  // }
+  if (user) {
+    return redirect("/dashboard");
+  }
   return (
     <main className="flex flex-col min-h-screen items-center justify-center">
       <Navigation />

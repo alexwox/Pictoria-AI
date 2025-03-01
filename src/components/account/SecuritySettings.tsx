@@ -28,12 +28,19 @@ function SecuritySettings({ user }: SecuritySettingsProps) {
           { id: toastId }
         );
       }
-    } catch (error: any) {
-      toast.error(
-        error?.message ||
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(
+          error?.message ||
+            "There was an error sending the &apos; reset password email'. Contact support. ",
+          { id: toastId }
+        );
+      } else {
+        toast.error(
           "There was an error sending the &apos; reset password email'. Contact support. ",
-        { id: toastId }
-      );
+          { id: toastId }
+        );
+      }
     }
 
     return null;

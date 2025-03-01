@@ -13,10 +13,36 @@ const replicate = new Replicate({
   useFileOutput: false,
 });
 
-interface ImageResponse<T = unknown> {
+interface ImageResponse {
   error: string | null;
   success: boolean;
-  data: T[] | null;
+  data: ReplicateResponse[] | null;
+}
+
+interface ReplicateResponse {
+  id: string;
+  model: string;
+  version: string;
+  input: {
+    text: string;
+    // Include additional properties if needed
+  };
+  logs: string;
+  output: string;
+  error: string | null;
+  status: string; // You could narrow this to a union of possible status values if known
+  created_at: string; // ISO timestamp, consider converting to Date if needed
+  data_removed: boolean;
+  started_at: string;
+  completed_at: string;
+  metrics: {
+    predict_time: number;
+    // Other metric properties can be added here
+  };
+  urls: {
+    cancel: string;
+    get: string;
+  };
 }
 
 export async function generateImageAction(
@@ -72,7 +98,7 @@ export async function generateImageAction(
         num_inference_steps: input.num_inference_steps,
       };
   try {
-    const output: {} = await replicate.run(
+    const output: ImageResponse = await replicate.run(
       input.model as `${string}/${string}`,
       {
         input: modelInput,

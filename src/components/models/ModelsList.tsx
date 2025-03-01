@@ -48,7 +48,7 @@ interface ModelsListProps {
 }
 
 function ModelsList({ models }: ModelsListProps) {
-  const { data, success, error } = models;
+  const { data } = models;
   const router = useRouter();
 
   const toastId = useId();

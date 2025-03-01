@@ -47,10 +47,9 @@ function ResetPassword({ className }: { className?: string }) {
           { id: toastId }
         );
       }
-    } catch (error: any) {
+    } catch (error) {
       toast.error(
-        error?.message ||
-          "There was an error sending the &apos; reset password email'. Contact support. ",
+        "There was an error sending the &apos; reset password email'. Contact support. ",
         { id: toastId }
       );
     }
