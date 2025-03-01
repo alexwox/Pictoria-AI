@@ -1,8 +1,6 @@
 import Pricing from "@/components/landing-page/Pricing";
 import { getProducts, getUser } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import Image from "next/image";
 import Navigation from "@/components/landing-page/Navigation";
 import HeroSection from "@/components/landing-page/HeroSection";
 import Features from "@/components/landing-page/Features";

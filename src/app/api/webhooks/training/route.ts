@@ -127,13 +127,15 @@ export async function POST(request: Request) {
     await supabaseAdmin.storage.from("training_data").remove([`${fileName}`]);
     console.log(NextResponse.json("OK", { status: 200 }));
     return NextResponse.json("OK", { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Webhook processing error.");
-    return NextResponse.json(
-      {
-        error: error.message ?? "Internal server error",
-      },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      return NextResponse.json(
+        {
+          error: error.message ?? "Internal server error",
+        },
+        { status: 500 }
+      );
+    }
   }
 }

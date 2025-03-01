@@ -13,10 +13,10 @@ const replicate = new Replicate({
   useFileOutput: false,
 });
 
-interface ImageResponse {
+interface ImageResponse<T = unknown> {
   error: string | null;
   success: boolean;
-  data: any | null;
+  data: T[] | null;
 }
 
 export async function generateImageAction(
@@ -72,18 +72,28 @@ export async function generateImageAction(
         num_inference_steps: input.num_inference_steps,
       };
   try {
-    const output = await replicate.run(input.model as `${string}/${string}`, {
-      input: modelInput,
-    });
+    const output: {} = await replicate.run(
+      input.model as `${string}/${string}`,
+      {
+        input: modelInput,
+      }
+    );
 
     return {
       error: null,
       success: true,
       data: output,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return {
+        error: error.message || "Failed to generate image",
+        success: false,
+        data: null,
+      };
+    }
     return {
-      error: error.message || "Failed to generate image",
+      error: "Something went wrong",
       success: false,
       data: null,
     };

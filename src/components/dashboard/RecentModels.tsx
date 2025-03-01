@@ -1,8 +1,5 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Button } from "../ui/button";
-import Link from "next/link";
-import { CreditCard, PlusIcon, Wand2Icon } from "lucide-react";
 import { Database } from "@datatypes.types";
 import { Badge } from "../ui/badge";
 

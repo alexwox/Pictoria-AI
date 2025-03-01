@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { ImageGenerationFormSchema } from "@/components/image-generation/Configurations";
-import { createClient } from "@/lib/supabase/server";
 import { z } from "zod";
 import { generateImageAction, storeImages } from "@/app/actions/image-actions";
 import { toast } from "sonner";
@@ -27,6 +26,11 @@ const useGeneratedStore = create<GenerateState>((set) => ({
       const { error, success, data } = await generateImageAction(values);
 
       if (!success) {
+        set({ error: error, loading: false });
+        return;
+      }
+
+      if (!data) {
         set({ error: error, loading: false });
         return;
       }

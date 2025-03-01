@@ -3,7 +3,6 @@ import PlanSummary from "@/components/billing/PlanSummary";
 import Pricing from "@/components/billing/Pricing";
 import { getProducts, getSubscription, getUser } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server";
-import { subscribe } from "diagnostics_channel";
 import { redirect } from "next/navigation";
 import React from "react";
 

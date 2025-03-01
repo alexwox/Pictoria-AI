@@ -1,5 +1,4 @@
 "use server";
-import { supabaseAdmin } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { Tables } from "@datatypes.types";
 

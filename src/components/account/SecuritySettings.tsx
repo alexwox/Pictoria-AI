@@ -2,13 +2,7 @@
 import { User } from "@supabase/supabase-js";
 import React, { useId } from "react";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { resetPassword } from "@/app/actions/auth-actions";

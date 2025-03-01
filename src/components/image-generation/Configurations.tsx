@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -31,7 +30,6 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
 import { InfoIcon } from "lucide-react";
-import { generateImageAction } from "@/app/actions/image-actions";
 import useGeneratedStore from "@/store/useGeneratedStore";
 import { Tables } from "@datatypes.types";
 

@@ -90,7 +90,7 @@ export async function deleteModel(
 
         throw new Error("Failed to delete model version from Replicate");
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Failed to delete model version from replicate", e);
       return {
         error: "Failed to delete model version from replicate",
@@ -118,7 +118,7 @@ export async function deleteModel(
           success: false,
         };
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Failed to delete model from replicate", e);
       return {
         error: "Failed to delete model from replicate",

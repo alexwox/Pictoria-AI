@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChevronsUpDown, Image, Sparkles } from "lucide-react";
+import { ChevronsUpDown, Sparkles } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 

@@ -3,7 +3,7 @@ import Logo from "../Logo";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
-import { Menu, MenuIcon } from "lucide-react";
+import { Menu } from "lucide-react";
 
 function Navigation() {
   return (

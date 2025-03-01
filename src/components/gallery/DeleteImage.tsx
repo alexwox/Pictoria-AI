@@ -16,8 +16,6 @@ import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { deleteImage } from "@/app/actions/image-actions";
 import { cn } from "@/lib/utils";
-import { revalidatePath } from "next/cache";
-import { Router } from "next/router";
 
 interface DeleteImageProps {
   imageId: string;

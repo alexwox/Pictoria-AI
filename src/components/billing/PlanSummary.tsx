@@ -4,7 +4,6 @@ import React from "react";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
-import { Button } from "../ui/button";
 import PricingSheet from "./PricingSheet";
 import { format } from "date-fns";
 import { Separator } from "../ui/separator";

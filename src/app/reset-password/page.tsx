@@ -2,12 +2,7 @@ import React from "react";
 import AuthImg from "@/public/Abstract Curves and Colors.jpeg";
 import Image from "next/image";
 import Logo from "@/components/Logo";
-import AuthForm from "@/components/authentication/AuthForm";
 import ChangePasswordForm from "@/components/account/ChangePasswordForm";
-
-interface SearchParams {
-  state?: string;
-}
 
 async function ResetPasswordPage() {
   return (
