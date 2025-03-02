@@ -8,7 +8,8 @@ const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
 
-const WEBHOOK_URL = "https://97dc-90-142-47-77.ngrok-free.app";
+const WEBHOOK_URL =
+  process.env.NGROK_WEBHOOK_URL ?? "https://pictoria-ai-rosy.vercel.app";
 
 async function validateUserCredits(userId: string) {
   const { data: credits, error } = await supabaseAdmin

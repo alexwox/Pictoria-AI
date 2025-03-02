@@ -37,7 +37,7 @@ async function BillingPage() {
           products={products || []}
           credits={credits}
         />
-        {subscription.status === "active" && (
+        {subscription?.status === "active" ? (
           <Pricing
             user={user}
             products={products ?? []}
@@ -47,6 +47,14 @@ async function BillingPage() {
             activeProduct={
               subscription?.prices?.products.name.toLowerCase() || "pro"
             }
+          />
+        ) : (
+          <Pricing
+            user={user}
+            products={products ?? []}
+            subscription={null}
+            showInterval={true}
+            className="!p-0 max-w-full"
           />
         )}
       </div>
