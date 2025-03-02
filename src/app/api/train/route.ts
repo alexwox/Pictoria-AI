@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import Replicate from "replicate";
 
+// Initialize outside of the route handler
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 });
