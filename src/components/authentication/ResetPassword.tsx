@@ -50,7 +50,7 @@ function ResetPassword({ className }: { className?: string }) {
           { id: toastId }
         );
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error(
         "There was an error sending the &apos; reset password email'. Contact support. ",
         { id: toastId }

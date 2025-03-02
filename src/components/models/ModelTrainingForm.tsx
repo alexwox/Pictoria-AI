@@ -45,9 +45,7 @@ const formSchema = z.object({
     ),
 });
 
-type Props = {};
-
-function ModelTrainingForm({}: Props) {
+function ModelTrainingForm() {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
