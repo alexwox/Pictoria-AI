@@ -36,11 +36,14 @@ function ResetPassword({ className }: { className?: string }) {
     toast.loading("Sending password reset email...", { id: toastId });
 
     try {
-      const { success, error } = await resetPassword({
+      const { success } = await resetPassword({
         email: values.email || "",
       });
       if (!success) {
-        toast.error(error, { id: toastId });
+        toast.error(
+          "There was an error sending the &apos; reset password email'. Contact support. ",
+          { id: toastId }
+        );
       } else {
         toast.success(
           "Reset password email has been sent. Please check your email. ",

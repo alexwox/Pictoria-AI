@@ -98,17 +98,17 @@ export async function generateImageAction(
         num_inference_steps: input.num_inference_steps,
       };
   try {
-    const output: ImageResponse = await replicate.run(
-      input.model as `${string}/${string}`,
-      {
-        input: modelInput,
-      }
-    );
+    const output = await replicate.run(input.model as `${string}/${string}`, {
+      input: modelInput,
+    });
+
+    // Convert the single response to an array
+    const responseArray = Array.isArray(output) ? output : [output];
 
     return {
       error: null,
       success: true,
-      data: output,
+      data: responseArray,
     };
   } catch (error: unknown) {
     if (error instanceof Error) {

@@ -25,29 +25,22 @@ const useGeneratedStore = create<GenerateState>((set) => ({
     try {
       const { error, success, data } = await generateImageAction(values);
 
-      if (!success) {
+      if (!success || !data) {
         set({ error: error, loading: false });
         return;
       }
 
-      if (!data) {
-        set({ error: error, loading: false });
-        return;
-      }
-
-      const dataWithUrl = data.map((url: string) => {
-        return {
-          url,
-          ...values,
-        };
-      });
+      const dataWithUrl = data.map((response) => ({
+        url: response.output,
+        ...values,
+      }));
 
       set({ images: dataWithUrl, loading: false });
       toast.success("Image generated sucessfully", { id: toastId });
 
       await storeImages(dataWithUrl);
       toast.success("Image stored successfully", { id: toastId });
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       toast.error("Something went wrong", { id: toastId });
 
