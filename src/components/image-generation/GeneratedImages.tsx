@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/carousel";
 import Image from "next/image";
 import useGeneratedStore from "@/store/useGeneratedStore";
-import { Loader2Icon } from "lucide-react";
 
 function GeneratedImages() {
   const images = useGeneratedStore((state) => state.images);
